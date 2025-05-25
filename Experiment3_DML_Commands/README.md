@@ -1,422 +1,375 @@
-# Experiment 2: DDL Commands
+[# Experiment 3: DML Commands
 
 ## AIM
-To study and implement DDL commands and different types of constraints.
+To study and implement DML (Data Manipulation Language) commands.
 
 ## THEORY
 
-### 1. CREATE
-Used to create a new relation (table).
-
+### 1. INSERT INTO
+Used to add records into a relation.
+These are three type of INSERT INTO queries which are as
+A)Inserting a single record
+**Syntax (Single Row):**
+```sql
+INSERT INTO table_name (field_1, field_2, ...) VALUES (value_1, value_2, ...);
+```
+**Syntax (Multiple Rows):**
+```sql
+INSERT INTO table_name (field_1, field_2, ...) VALUES
+(value_1, value_2, ...),
+(value_3, value_4, ...);
+```
+**Syntax (Insert from another table):**
+```sql
+INSERT INTO table_name SELECT * FROM other_table WHERE condition;
+```
+### 2. UPDATE
+Used to modify records in a relation.
+Syntax:
+```sql
+UPDATE table_name SET column1 = value1, column2 = value2 WHERE condition;
+```
+### 3. DELETE
+Used to delete records from a relation.
+**Syntax (All rows):**
+```sql
+DELETE FROM table_name;
+```
+**Syntax (Specific condition):**
+```sql
+DELETE FROM table_name WHERE condition;
+```
+### 4. SELECT
+Used to retrieve records from a table.
 **Syntax:**
 ```sql
-CREATE TABLE (
-  field_1 data_type(size),
-  field_2 data_type(size),
-  ...
-);
+SELECT column1, column2 FROM table_name WHERE condition;
 ```
-### 2. ALTER
-Used to add, modify, drop, or rename fields in an existing relation.
-(a) ADD
-```sql
-ALTER TABLE std ADD (Address CHAR(10));
-```
-(b) MODIFY
-```sql
-ALTER TABLE relation_name MODIFY (field_1 new_data_type(size));
-```
-(c) DROP
-```sql
-ALTER TABLE relation_name DROP COLUMN field_name;
-```
-(d) RENAME
-```sql
-ALTER TABLE relation_name RENAME COLUMN old_field_name TO new_field_name;
-```
-### 3. DROP TABLE
-Used to permanently delete the structure and data of a table.
-```sql
-DROP TABLE relation_name;
-```
-### 4. RENAME
-Used to rename an existing database object.
-```sql
-RENAME TABLE old_relation_name TO new_relation_name;
-```
-### CONSTRAINTS
-Constraints are used to specify rules for the data in a table. If there is any violation between the constraint and the data action, the action is aborted by the constraint. It can be specified when the table is created (using CREATE TABLE) or after it is created (using ALTER TABLE).
-### 1. NOT NULL
-When a column is defined as NOT NULL, it becomes mandatory to enter a value in that column.
-Syntax:
-```sql
-CREATE TABLE Table_Name (
-  column_name data_type(size) NOT NULL
-);
-```
-### 2. UNIQUE
-Ensures that values in a column are unique.
-Syntax:
-```sql
-CREATE TABLE Table_Name (
-  column_name data_type(size) UNIQUE
-);
-```
-### 3. CHECK
-Specifies a condition that each row must satisfy.
-Syntax:
-```sql
-CREATE TABLE Table_Name (
-  column_name data_type(size) CHECK (logical_expression)
-);
-```
-### 4. PRIMARY KEY
-Used to uniquely identify each record in a table.
-Properties:
-Must contain unique values.
-Cannot be null.
-Should contain minimal fields.
-Syntax:
-```sql
-CREATE TABLE Table_Name (
-  column_name data_type(size) PRIMARY KEY
-);
-```
-### 5. FOREIGN KEY
-Used to reference the primary key of another table.
-Syntax:
-```sql
-CREATE TABLE Table_Name (
-  column_name data_type(size),
-  FOREIGN KEY (column_name) REFERENCES other_table(column)
-);
-```
-### 6. DEFAULT
-Used to insert a default value into a column if no value is specified.
-
-Syntax:
-```sql
-CREATE TABLE Table_Name (
-  col_name1 data_type,
-  col_name2 data_type,
-  col_name3 data_type DEFAULT 'default_value'
-);
-```
-
 **Question 1**
 --
 ```
-Create a new table named item with the following specifications and constraints:
-item_id as TEXT and as primary key.
-item_desc as TEXT.
-rate as INTEGER.
-icom_id as TEXT with a length of 4.
-icom_id is a foreign key referencing com_id in the company table.
-The foreign key should set NULL on updates and deletes.
-item_desc and rate should not accept NULL.
+Write a SQL statement to change salary of employee to 8000 whose Employee ID is 105, if the existing salary is less than 5000.
+
+Employees table
+
+---------------
+employee_id
+first_name
+last_name
+email
+phone_number
+hire_date
+job_id
+salary
+commission_pct
+manager_id
+department_id
 For example:
 
 Test	Result
-INSERT INTO item VALUES("ITM5","Charlie Gold",700,"COM4");
-UPDATE company SET com_id='COM5' WHERE com_id='COM4';
-SELECT * FROM item;
-item_id     item_desc     rate        icom_id
-----------  ------------  ----------  ----------
-ITM5        Charlie Gold  700
+SELECT EMPLOYEE_ID, FIRST_NAME, SALARY, PHONE_NUMBER FROM EMPLOYEES WHERE EMPLOYEE_ID=105;
+EMPLOYEE_ID  FIRST_NAME  SALARY      PHONE_NUMBER
+-----------  ----------  ----------  ------------
+105          David       8000        590.423.4569
 ```
 
-
 ```sql
-CREATE TABLE item(
-    item_id TEXT PRIMARY KEY,
-    item_desc TEXT,
-    rate INTEGER,
-    icom_id TEXT(4),
-    foreign Key (icom_id) REFERENCES company(com_id)
-    ON UPDATE SET NULL
-    ON DELETE SET NULL
-);
+update Employees 
+set salary=8000
+where employee_id=105 and salary <5000;
 ```
 
 **Output:**
-
-![Screenshot (162)](https://github.com/user-attachments/assets/4435ecec-311f-4e30-b46c-4f297033f65a)
+![Screenshot (172)](https://github.com/user-attachments/assets/eb05af14-4b92-41ac-9c9a-f545453a4c1e)
 
 
 **Question 2**
 ---
 ```
-Create a table named Customers with the following columns:
+Write a SQL statement to Change the supplier name to 'A1 Suppliers' where the supplier ID is 8 in the suppliers table.
 
-CustomerID as INTEGER
-Name as TEXT
-Email as TEXT
-JoinDate as DATETIME
+Table info
+
+suppliers(supplier_id,supplier_name,contact_person,phone_number,email,address)
+
 For example:
 
 Test	Result
-pragma table_info('Customers');
-cid         name        type        notnull     dflt_value  pk
-----------  ----------  ----------  ----------  ----------  ----------
-0           CustomerID  INTEGER     0                       0
-1           Name        TEXT        0                       0
-2           Email       TEXT        0                       0
-3           JoinDate    DATETIME    0                       0
+select changes();
+changes()
+----------
+1
 ```
 
 ```sql
-CREATE TABLE Customers(
-    CustomerID INTEGER ,
-    Name TEXT  ,
-    Email TEXT ,
-    JoinDate DATETIME
-);
+update suppliers
+set supplier_name="A1 Suppliers"
+where supplier_id=8;
 ```
 
 **Output:**
-![Screenshot (163)](https://github.com/user-attachments/assets/f0ac9c67-bcd7-4be9-8f59-1f1a5b9467f0)
 
-
+![Screenshot (173)](https://github.com/user-attachments/assets/cb9e581b-d013-4298-8e59-32cd585aca8a)
 
 **Question 3**
 ---
 ```
-Create a table named Attendance with the following constraints:
-AttendanceID as INTEGER should be the primary key.
-EmployeeID as INTEGER should be a foreign key referencing Employees(EmployeeID).
-AttendanceDate as DATE.
-Status as TEXT should be one of 'Present', 'Absent', 'Leave'.
+Write a SQL query to reduce the reorder level by 30% where cost price is more than 50 and quantity in stock is less than 100 in the products table.
+
+Products Table 
+
+name          type       
+----------    ---------- 
+product_id     INT PRIMARY KEY        
+product_name   VARCHAR(10) 
+category       VARCHAR(50) 
+cost_price     DECIMAL(10) 
+sell_price     DECIMAL(10) 
+reorder_lvl    INT        
+quantity       INT        
+supplier_id    INT               
 For example:
 
 Test	Result
-INSERT INTO Attendance (AttendanceID, EmployeeID, AttendanceDate, Status) VALUES (1, 1, '2024-08-01', 'Present');
-SELECT * FROM Attendance;
-AttendanceID  EmployeeID  AttendanceDate  Status
-------------  ----------  --------------  ----------
-1             1           2024-08-01      Present
+--pragma table_info('products');
+select changes();
+changes()
+----------
+2
 ```
 
 ```sql
-CREATE TABLE Attendance(
-    AttendanceID INTEGER primary key,
-    EmployeeID INTEGER,
-    AttendanceDate DATE,
-    Status TEXT CHECK(Status IN ('Present','Absent','Leave')),
-    foreign key (EmployeeID) references Employees(EmployeeID)
-);
+update products
+set reorder_lvl=reorder_lvl*0.7
+where cost_price>50 and quantity<100;
 ```
 
 **Output:**
+![Screenshot (174)](https://github.com/user-attachments/assets/a22dd864-15f2-4773-b086-627dba19c085)
 
-![Screenshot (164)](https://github.com/user-attachments/assets/efd4d440-002e-4542-962d-c7e81b057465)
 
 **Question 4**
 ---
 ```
-Write an SQL command can to add a column named email of type TEXT to the customers table
+Write a SQL query to Delete a Specific Surgery which was made on 28th Feb 2024.
 
- 
+Sample table: Surgeries
 
+attributes: surgery_id, patient_id, surgeon_id, surgery_date
 For example:
 
 Test	Result
-pragma table_info('Customers');
-cid         name        type        notnull     dflt_value  pk
-----------  ----------  ----------  ----------  ----------  ----------
-0           id          integer     0                       0
-1           name        text        0                       0
-2           email       TEXT        0                       0
+SELECT * FROM surgeries;
+surgery_id  patient_id  surgeon_id  surgery_date
+----------  ----------  ----------  ------------
+1           1           1           2024-01-15
+2           2           2           2024-02-28
+3           3           3           2024-03-25
+surgery_id  patient_id  surgeon_id  surgery_date
+----------  ----------  ----------  ------------
+1           1           1           2024-01-15
+3           3           3           2024-03-25
 ```
 
 ```sql
-ALTER TABLE customers ADD COLUMN  email TEXT;
+update Employees
+set email='not available',commission_pct=0.55
+where department_id=110;
 ```
 
 **Output:**
-
-![Screenshot (165)](https://github.com/user-attachments/assets/681504b1-0879-415c-af54-bb1ed2afb929)
+![Screenshot (175)](https://github.com/user-attachments/assets/1021f575-9991-463a-b1b9-9f3ee7bbc885)
 
 
 **Question 5**
 ---
-
 ```
-Write an SQL query to add a new column email of type TEXT to the Student_details table, and ensure that this column cannot contain NULL values and make default value as 'Invalid'
+Write a SQL query to Delete a Specific Surgery which was made on 28th Feb 2024.
 
- 
+Sample table: Surgeries
 
- 
-
+attributes: surgery_id, patient_id, surgeon_id, surgery_date
 For example:
 
 Test	Result
-INSERT INTO Student_details (RollNo, Name, Gender, Subject, email) 
-VALUES (1, 'John Doe', 'M', 'Math', 'john@example.com');
-select * from Student_details;
-RollN  Name   Gen  Subject     email
------  -----  ---  ----------  ----------------
-1      John   M    Math        john@example.com
+SELECT * FROM surgeries;
+surgery_id  patient_id  surgeon_id  surgery_date
+----------  ----------  ----------  ------------
+1           1           1           2024-01-15
+2           2           2           2024-02-28
+3           3           3           2024-03-25
+surgery_id  patient_id  surgeon_id  surgery_date
+----------  ----------  ----------  ------------
+1           1           1           2024-01-15
+3           3           3           2024-03-25
 ```
-
 ```sql
-ALTER TABLE 'Student_details'ADD COLUMN email  TEXT NOT NULL DEFAULT 'Invalid';
+delete from surgeries
+where surgery_date='2024-02-28';
 ```
-**Output:**
-![Screenshot (166)](https://github.com/user-attachments/assets/52ffb2ac-29c6-411c-bcc5-07fbabd52815)
 
+**Output:**
+
+![Screenshot (176)](https://github.com/user-attachments/assets/bf45d38e-64ad-4959-8277-8507048132a9)
 
 **Question 6**
 ---
 ```
-Insert the below data into the Employee table, allowing the Department and Salary columns to take their default values.
+Write a SQL query to Delete a Specific Surgery whose ID is 3
 
-EmployeeID  Name         Position
-----------  -----------  ----------
-4           Emily White  Analyst
+Sample table: Surgeries
 
-Note: The Department and Salary columns will use their default values.    
+attributes: surgery_id, patient_id, surgeon_id, surgery_date
 For example:
 
 Test	Result
-SELECT EmployeeID, Name, Position 
-FROM Employee;
-EmployeeID  Name         Position
-----------  -----------  ----------
-4           Emily White  Analyst
+SELECT * FROM surgeries;
+surgery_id  patient_id  surgeon_id  surgery_date
+----------  ----------  ----------  ------------
+1           1           1           2024-01-15
+2           2           2           2024-02-28
+3           3           3           2024-03-25
+surgery_id  patient_id  surgeon_id  surgery_date
+----------  ----------  ----------  ------------
+1           1           1           2024-01-15
+2           2           2           2024-02-28
 ```
-
 
 ```sql
-INSERT INTO Employee (EmployeeID,Name,Position)
-VALUES(4,'Emily White','Analyst');
+delete from surgeries 
+where Surgery_ID = 3;
 ```
 
-
-
 **Output:**
-![Screenshot (167)](https://github.com/user-attachments/assets/c59c931c-64f5-4720-a7cc-89d7ccab246b)
-
+![Screenshot (177)](https://github.com/user-attachments/assets/ce2d69a9-bd7a-4b98-9128-1e6e7da63957)
 
 **Question 7**
 ---
 ```
-Create a table named ProjectAssignments with the following constraints:
-AssignmentID as INTEGER should be the primary key.
-EmployeeID as INTEGER should be a foreign key referencing Employees(EmployeeID).
-ProjectID as INTEGER should be a foreign key referencing Projects(ProjectID).
-AssignmentDate as DATE should be NOT NULL.
-For example:
+Write a SQL query to delete a doctor from Doctors table whos specialization is 'Cardiology'
 
-Test	Result
-INSERT INTO ProjectAssignments (AssignmentID, EmployeeID, ProjectID, AssignmentDate) VALUES (2, 99, 1, '2024-01-03');
-Error: FOREIGN KEY constraint failed
+Sample table: Doctors
+
+attributes : doctor_id, first_name, last_name, specialization
 ```
 
 ```sql
-CREATE TABLE ProjectAssignments(
-    AssignmentID INTEGER primary key,
-    EmployeeID INTEGER,
-    ProjectID INTEGER ,
-    AssignmentDate DATE NOT NULL,
-    foreign key (EmployeeID) REFERENCES Employees(EmployeeID),
-    Foreign key (ProjectID) REFERENCES Projects(projectID)
-);
+delete from Doctors
+where specialization="Cardiology";
+
 ```
 
-
 **Output:**
-![Screenshot (168)](https://github.com/user-attachments/assets/7937af72-70d2-435c-868f-19e026ff2293)
+![Screenshot (178)](https://github.com/user-attachments/assets/6f711f8a-6cb5-43e2-83c0-c5a8a2d52a81)
+
 
 **Question 8**
 ---
 ```
-Insert all books from Out_of_print_books into Books
+Write a SQL query to determine the age group of value1 in the Calculations table as 'Child' if it is less than 13, 'Teen' if it is between 13 and 19, and 'Adult' if it is 20 or older.
 
-Table attributes are ISBN, Title, Author, Publisher, YearPublished
+cid         name        type        notnull     dflt_value  pk
+----------  ----------  ----------  ----------  ----------  ----------
+0           id          INTEGER     0                       1
+1           value1      REAL        0                       0
+2           value2      REAL        0                       0
+3           base        INTEGER     0                       0
+4           exponent    INTEGER     0                       0
+5           number      REAL        0                       0
+6           decimal     REAL        0                       0
+ 
 
 For example:
 
-Test	Result
-select * from Books;
-ISBN            Title           Author              Publisher      YearPublished
---------------  --------------  ------------------  -------------  -------------
-978-1234567890  The Lost World  Arthur Conan Doyle  Vintage Books  1912
-978-0987654321  Gone with the   Margaret Mitchell   Macmillan      1936
-978-1122334455  Moby Dick       Herman Melville     Harper & Brot  1851
+Result
+id          value1      age_group
+----------  ----------  ----------
+1           10.0        Child
+2           18.0        Teen
+3           23.0        Adult
 ```
 
 ```sql
-INSERT INTO Books(ISBN, Title, Author, Publisher, YearPublished)
-SELECT ISBN, Title, Author, Publisher, YearPublished FROM Out_of_print_books;
+select id,value1, 
+case
+when  value1 <13 then"Child"
+when value1 between 13 and 19 then "Teen"
+else "Adult"
+end as "age_group" from calculations;
 ```
 
 **Output:**
-![Screenshot (169)](https://github.com/user-attachments/assets/e13c4490-5142-4229-9783-851ffc4140f8)
+
+![Screenshot (179)](https://github.com/user-attachments/assets/953c01c9-d629-4466-a0b1-aecc32283a9a)
 
 **Question 9**
 ---
 ```
-In the Student_details table, insert a student record where some fields are NULL, another record where all fields are filled without any NULL values, and a third record where some fields are filled, and others are left as NULL.
+Write a SQL query to retrieve all orders where the purchase amount is between 500 and 4000 but exclude orders with purchase amounts of 948.50 and 1983.43. The query should return the columns: ord_no, purch_amt, ord_date, customer_id, and salesman_id.
 
-RollNo      Name            Gender      Subject      MARKS
-----------  ------------    ----------  ----------   ----------
-205         Olivia Green    F
-207         Liam Smith      M           Mathematics  85
-208         Sophia Johnson  F           Science
+Table: orders
+
+ord_no      purch_amt   ord_date    customer_id  salesman_id
+----------  ----------  ----------  -----------  -----------
+70001       150.5       2012-10-05  3005         5002
+70009       270.65      2012-09-10  3001         5005
 For example:
 
-Test	Result
-select * from Student_details;
-RollNo      Name          Gender      Subject     MARKS
-----------  ------------  ----------  ----------  ----------
-205         Olivia Green  F
-207         Liam Smith    M           Mathematic  85
-208         Sophia Johns  F           Science
+Result
+ord_no      purch_amt   ord_date    customer_id  salesman_id
+----------  ----------  ----------  -----------  -----------
+70003       2480.4      2012-10-10  3009         5003
+70013       3045.6      2012-04-25  3002         5001
 ```
 
+
 ```sql
-INSERT INTO Student_details(RollNo,Name,Gender,Subject,MARKS)
-    VALUES(205,'Olivia Green','F',NOT NULL,NOT NULL),
-        (207  ,'Liam Smith','M ','Mathematics', 85),
-        (208 ,'Sophia Johns',  'F','Science',NOT NULL);
+select ord_no,purch_amt,ord_date,customer_id ,salesman_id
+from orders
+where purch_amt between 500 and 4000 and purch_amt NOT IN (948.50,1983.43);
 ```
 
 **Output:**
-![Screenshot (170)](https://github.com/user-attachments/assets/b5d75c1e-00a6-4209-a2a7-f0ee4c007dc7)
+![Screenshot (180)](https://github.com/user-attachments/assets/7f6edb3a-8d6e-459d-af80-d2a6d6993f5c)
+
 
 **Question 10**
 ---
 ```
-Create a new table named contacts with the following specifications:
-contact_id as INTEGER and primary key.
-first_name as TEXT and not NULL.
-last_name as TEXT and not NULL.
-email as TEXT.
-phone as TEXT and not NULL with a check constraint to ensure the length of phone is at least 10 characters.
+Write a SQL query to find all employees who were hired in the year 2022 from emp table.
+
+cid         name        type        
+----------  ----------  ---------- 
+0           empno       INT         
+1           ename       VARCHAR(100)
+2           job         VARCHAR(50)
+3           mgr         INT        
+4           hiredate    DATE        
+5           sal         DECIMAL(10,2)  
+6           comm        DECIMAL(10,2)  
+7           deptno      INT         
 For example:
 
-Test	Result
-INSERT INTO contacts (contact_id, first_name, last_name, email, phone) VALUES (1, 'John', 'Doe', 'john.doe@example.com', '1234567890');
-SELECT * FROM contacts;
-contact_id  first_name  last_name   email                 phone
-----------  ----------  ----------  --------------------  ----------
-1           John        Doe         john.doe@example.com  1234567890
+Result
+empno       ename       job         mgr         hiredate    sal         comm        deptno
+----------  ----------  ----------  ----------  ----------  ----------  ----------  ----------
+7369        SMITH       CLERK       7902        2022-08-22  800                     20
+7499        ALLEN       SALESMAN    7698        2022-08-22  1600        300         30
+7521        WARD        SALESMAN    7698        2022-08-22  1250        500         30
+7900        JAMES       CLERK       7698        2022-08-22  950                     30
+7902        FORD        ANALYST     7566        2022-08-22  3000                    20
+7934        MILLER      CLERK       7782        2022-08-22  1300                    10
 ```
+
 ```sql
-CREATE TABLE contacts(
-    contact_id INTEGER primary key,
-    first_name TEXT NOT NULL,
-    last_name TEXT NOT NULL,
-    email TEXT,
-    phone TEXT NOT NULL CHECK(LENGTH(Phone)>=10)
-);
+select empno,ename,job,mgr,hiredate,sal, comm,deptno
+from emp
+where hiredate between '2022-01-01' and '2022-12-31';
 ```
 
 **Output:**
-![Screenshot (171)](https://github.com/user-attachments/assets/194fc618-ca2b-4895-b477-b6e8bea73df4)
-
+![Screenshot (181)](https://github.com/user-attachments/assets/aa460f04-4264-4436-a67f-00dad59c5e8a)
 
 ## RESULT
-Thus, the SQL queries to implement different types of constraints and DDL commands have been executed successfully.
-
-
+Thus, the SQL queries to implement DML commands have been executed successfully.
+](https://github.com/Dhanujam/19CS404-DBMS-Lab-Manual/blob/main/Experiment3_DML_Commands/README.md)
